@@ -44,3 +44,21 @@ void updateDisplay(const char* symbol, float prices[24]) {
   drawGraph(prices, 24, 0, 63, 128, 30);
   u8g2.sendBuffer();
 }
+
+void showStatus(const char* title, const char* msg1, const char* msg2) {
+  u8g2.clearBuffer();
+  u8g2.setFont(u8g2_font_6x10_tf);
+  u8g2.drawStr(0, 12, title);
+  u8g2.drawStr(0, 32, msg1);
+  u8g2.drawStr(0, 52, msg2);
+  u8g2.sendBuffer();
+}
+
+void showIP(IPAddress ip) {
+  u8g2.clearBuffer();
+  u8g2.setFont(u8g2_font_7x14_tf);
+  u8g2.drawStr(0, 15, "MY IP:");
+  u8g2.setCursor(0, 40);
+  u8g2.print(ip);
+  u8g2.sendBuffer();
+}

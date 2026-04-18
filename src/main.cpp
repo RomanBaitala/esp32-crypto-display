@@ -2,6 +2,7 @@
 #include "display.hpp"
 #include "buttons.hpp"
 #include "binance.hpp"
+#include "network_status.hpp"
 #include <wifi.hpp>
 
 const uint32_t errorPause = 10000;
@@ -14,9 +15,10 @@ float prices[24];
 
 void setup() {
   Serial.begin(115200);
-  connectWiFi();
   initDisplay();
   initButtons();
+  WiFi.onEvent(wifiEventHandler);
+  connectWiFi();
 }
 
 void loop() {
