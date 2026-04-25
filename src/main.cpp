@@ -16,7 +16,6 @@ float prices[24];
 void setup() {
   Serial.begin(115200);
   initDisplay();
-  initButtons();
   WiFi.onEvent(wifiEventHandler);
   connectWiFi();
 }
@@ -35,16 +34,16 @@ void loop() {
 
   if (WiFi.status() == WL_CONNECTED) {
     
-    checkButtons(currentPairIndex);
+  //   checkButtons(currentPairIndex);
     
-    if (wasNextPressed || wasPrevPressed) {
-      const char* symbol = symbols[currentPairIndex];
-      if (fetchBinancePrices(symbol, prices)) {
-        updateDisplay(symbol, prices);
-      } else {
-        Serial.println("Manual update failed");
-      }
-    }
+  //   if (wasNextPressed || wasPrevPressed) {
+  //     const char* symbol = symbols[currentPairIndex];
+  //     if (fetchBinancePrices(symbol, prices)) {
+  //       updateDisplay(symbol, prices);
+  //     } else {
+  //       Serial.println("Manual update failed");
+  //     }
+  //   }
 
     uint32_t currentTime = millis();
     if (currentTime - lastGetDataPause > getDataPause) {
