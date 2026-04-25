@@ -2,6 +2,7 @@
 #define APP_CONTROLLER_HPP
 
 #include <Arduino.h>
+#include "config.hpp"
 
 void handleNextPair();
 void handlePrevPair();

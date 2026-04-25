@@ -2,6 +2,7 @@
 #include "display.hpp"
 #include "buttons.hpp"
 #include "binance.hpp"
+#include "controller.hpp"
 #include "network_status.hpp"
 #include <wifi.hpp>
 
@@ -10,12 +11,22 @@ uint32_t lastTimeError = 0;
 const uint32_t getDataPause = 10000;
 uint32_t lastGetDataPause = 0;
 
-uint8_t currentPairIndex = 0;
 float prices[24];
+
+Button buttonNext(38, false, 2000);
+Button buttonPrev(37, false, 2000);
 
 void setup() {
   Serial.begin(115200);
   initDisplay();
+
+  buttonNext.begin();
+  buttonPrev.begin();
+
+  buttonNext.setLongPressCallback(handleToggleIP);
+  buttonNext.setShortPressCallback(handleNextPair);
+  buttonPrev.setShortPressCallback(handlePrevPair);
+
   WiFi.onEvent(wifiEventHandler);
   connectWiFi();
 }
@@ -34,16 +45,8 @@ void loop() {
 
   if (WiFi.status() == WL_CONNECTED) {
     
-  //   checkButtons(currentPairIndex);
-    
-  //   if (wasNextPressed || wasPrevPressed) {
-  //     const char* symbol = symbols[currentPairIndex];
-  //     if (fetchBinancePrices(symbol, prices)) {
-  //       updateDisplay(symbol, prices);
-  //     } else {
-  //       Serial.println("Manual update failed");
-  //     }
-  //   }
+    buttonNext.tick();
+    buttonPrev.tick();
 
     uint32_t currentTime = millis();
     if (currentTime - lastGetDataPause > getDataPause) {

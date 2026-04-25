@@ -9,6 +9,14 @@ Button::Button(
   _internalPullup(internalPullup), 
   _longPressDuration(longPressDuration) {}
 
+void Button::setShortPressCallback(ButtonCallback cb) {
+  _shortPressCallback = cb;
+}
+
+void Button::setLongPressCallback(ButtonCallback cb) {
+  _longPressCallback = cb;
+}
+
 void Button::begin() {
   if (_internalPullup) {
     pinMode(_pin, INPUT_PULLUP);
@@ -36,4 +44,13 @@ uint8_t Button::check() {
       result = 1;
     }
   }
+
+  _lastState = currentState;
+  return result;
+}
+
+void Button::tick() {
+  uint8_t res = check();
+  if (res == 1 && _shortPressCallback) _shortPressCallback();
+  if (res == 2 && _longPressCallback) _longPressCallback();
 }
