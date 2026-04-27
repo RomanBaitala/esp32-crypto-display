@@ -2,14 +2,18 @@
 #define CONFIG_HPP
 
 #include <Arduino.h>
+#include "buttons.hpp"
 
-const char* symbols[] = {
-  "BTCUSDT", "ETHUSDT", "BNBUSDT", "XRPUSDT", "SOLUSDT",
-  "ADAUSDT", "DOGEUSDT", "DOTUSDT", "TRXUSDT", "AVAXUSDT",
-  "MATICUSDT", "LINKUSDT", "LTCUSDT", "BCHUSDT", "XLMUSDT",
-  "ATOMUSDT", "FILUSDT", "ETCUSDT", "HBARUSDT", "APTUSDT"
-};
+extern const uint32_t getDataPause;
 
-const uint32_t totalSymbols = sizeof(symbols) / sizeof(symbols[0]);
+extern const uint8_t BUTTON_NEXT_PIN;
+extern const uint8_t BUTTON_PREV_PIN;
+
+extern Button buttonNext;
+extern Button buttonPrev;
+
+extern const char* symbols[];
+
+extern const uint32_t totalSymbols;
 
 #endif
