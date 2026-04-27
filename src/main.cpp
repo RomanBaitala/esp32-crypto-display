@@ -6,15 +6,9 @@
 #include "network_status.hpp"
 #include <wifi.hpp>
 
-const uint32_t errorPause = 10000;
-uint32_t lastTimeError = 0;
-const uint32_t getDataPause = 10000;
-uint32_t lastGetDataPause = 0;
-
+void handleDataUpdate();
+void handleDataLogic();
 float prices[24];
-
-Button buttonNext(38, false, 2000);
-Button buttonPrev(37, false, 2000);
 
 void setup() {
   Serial.begin(115200);
@@ -32,43 +26,38 @@ void setup() {
 }
 
 void loop() {
-  if (WiFi.getMode() == WIFI_AP || WiFi.getMode() == WIFI_AP_STA) {
+  buttonNext.tick();
+  buttonPrev.tick();
+
+  if (WiFi.getMode() == WIFI_MODE_AP) {
     dnsServer.processNextRequest();
     webServer.handleClient();
-    
-    return; 
-  }
-
-  if (WiFi.status() != WL_CONNECTED) {
-    return;
   }
 
   if (WiFi.status() == WL_CONNECTED) {
-    
-    buttonNext.tick();
-    buttonPrev.tick();
-
-    uint32_t currentTime = millis();
-    if (currentTime - lastGetDataPause > getDataPause) {
-      lastGetDataPause = currentTime;
-      
-      const char* symbol = symbols[currentPairIndex];
-      if (fetchBinancePrices(symbol, prices)) {
-        updateDisplay(symbol, prices);
-        Serial.println("Auto-update success");
-      } else {
-        if (currentTime - lastTimeError > errorPause) {
-          Serial.println("Error fetching prices (API/DNS)");
-          lastTimeError = currentTime;
-        }
-      }
+    if (isShowingIP){
+      showIP(WiFi.localIP());
+    } else {
+      handleDataLogic();
     }
-  } else {
+  }
+}
 
-    static uint32_t lastReconnectMsg = 0;
-    if (millis() - lastReconnectMsg > 5000) {
-      Serial.println("Waiting for WiFi connection...");
-      lastReconnectMsg = millis();
-    }
+void handleDataLogic() {
+  uint32_t currentTime = millis();
+  if (currentTime - lastGetDataPause > getDataPause) {
+    lastGetDataPause = currentTime;
+    handleDataUpdate();
+  } else if (forceRefresh) {
+    lastGetDataPause = currentTime;
+    forceRefresh = false;
+    handleDataUpdate();
+  }
+}
+
+void handleDataUpdate() {
+  const char* symbol = symbols[currentPairIndex];
+  if (fetchBinancePrices(symbol, prices)) {
+    updateDisplay(symbol, prices);
   }
 }

@@ -9,11 +9,14 @@ typedef void (*ButtonCallback)();
 class Button {
 private:
     uint8_t _pin;
-    bool _lastState;
+    bool _lastState = LOW;
+    bool _lastRawState = HIGH;
+    bool _currentState = HIGH;
     bool _isLongPress = false;
     bool _internalPullup = true;
     uint32_t _timer = 0;
     uint32_t _longPressDuration = 2000;
+    uint32_t _debounceDelay = 50;
 
     ButtonCallback _shortPressCallback = nullptr;
     ButtonCallback _longPressCallback = nullptr;

@@ -11,5 +11,7 @@ void handleToggleIP();
 extern bool isShowingIP;
 extern uint8_t currentPairIndex;
 extern bool forceRefresh;
+extern uint32_t lastGetDataPause;
+
 
 #endif

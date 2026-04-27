@@ -1,5 +1,7 @@
 #include "buttons.hpp"
 
+uint8_t prev_res = 0;
+
 Button::Button(
   uint8_t pin, 
   bool internalPullup, 
@@ -26,26 +28,38 @@ void Button::begin() {
 }
 
 uint8_t Button::check() {
-  bool currentState = digitalRead(_pin) == LOW;
+  bool rawRead = digitalRead(_pin);
   uint8_t result = 0;
 
-  if (currentState == LOW && _lastState == HIGH) {
+  if (rawRead != _lastRawState){
+    _timer = millis();
+  }
+
+  _lastRawState = rawRead;
+
+  if (millis() - _timer >= _debounceDelay){
+      _currentState = (rawRead == LOW);
+  }
+  
+  if (_currentState && !_lastState) {
     _timer = millis();
     _isLongPress = false;
-  } 
-  else if (currentState == HIGH && _lastState == LOW) {
+  }
+  
+  if (_currentState && !_isLongPress){
     if (millis() - _timer >= _longPressDuration){
       _isLongPress = true;
-      result = 2; 
-    } 
+      result = 2;
+    }
   }
-  else if (currentState == HIGH && _lastState == LOW) {
-    if (!_isLongPress) {
+
+  if (!_currentState && _lastState) {
+    if (!_isLongPress){
       result = 1;
     }
   }
 
-  _lastState = currentState;
+  _lastState = _currentState;
   return result;
 }
 
@@ -53,4 +67,11 @@ void Button::tick() {
   uint8_t res = check();
   if (res == 1 && _shortPressCallback) _shortPressCallback();
   if (res == 2 && _longPressCallback) _longPressCallback();
+  if (res != prev_res && _pin == 38) {
+    Serial.print("Button on pin ");
+    Serial.print(_pin);
+    Serial.print(" state: ");
+    Serial.println(res);
+    prev_res = res;
+  }
 }

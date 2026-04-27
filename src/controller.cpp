@@ -1,9 +1,10 @@
 #include "controller.hpp"
 
-
 bool isShowingIP = false;
 uint8_t currentPairIndex = 0;
 bool forceRefresh = false;
+uint32_t lastGetDataPause = 0;
+
 
 void handleNextPair() {
   if (isShowingIP) {
@@ -24,6 +25,6 @@ void handlePrevPair() {
 }
 
 void handleToggleIP() {
-  isShowingIP != isShowingIP;
+  isShowingIP = !isShowingIP;
   forceRefresh = true;
 }
