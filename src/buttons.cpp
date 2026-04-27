@@ -67,11 +67,4 @@ void Button::tick() {
   uint8_t res = check();
   if (res == 1 && _shortPressCallback) _shortPressCallback();
   if (res == 2 && _longPressCallback) _longPressCallback();
-  if (res != prev_res && _pin == 38) {
-    Serial.print("Button on pin ");
-    Serial.print(_pin);
-    Serial.print(" state: ");
-    Serial.println(res);
-    prev_res = res;
-  }
 }
